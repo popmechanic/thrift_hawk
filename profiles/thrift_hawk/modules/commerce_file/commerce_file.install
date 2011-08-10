@@ -1,0 +1,188 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions this module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function commerce_file_schema() {
+  $schema = array();
+
+  $schema['commerce_file_license'] = array(
+    'description' => 'The base table for licenses.',
+    'fields' => array(
+      'license_id' => array(
+        'description' => 'The primary identifier for a license.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'type' => array(
+        'description' => 'The type of this license.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'status' => array(
+        'description' => 'The status of this license.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+      ),
+      'uid' => array(
+        'description' => 'The {users}.uid that owns this license.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'created' => array(
+        'description' => 'The Unix timestamp when the license was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'changed' => array(
+        'description' => 'The Unix timestamp when the license was most recently saved.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'granted' => array(
+        'description' => 'The Unix timestamp when the license was initially granted.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('license_id'),
+    'indexes' => array(
+      'uid' => array('uid'),
+    ),
+    'foreign keys' => array(
+      'owner' => array(
+        'table' => 'users',
+        'columns' => array('uid' => 'uid'),
+      ),
+    ),
+  );
+
+  $schema['commerce_file_license_log'] = array(
+    'description' => 'Stores file download information for licensed files.',
+    'fields' => array(
+      'aid' => array(
+        'type' => 'serial',
+        'description' => 'Primary Key: Unique accesslog ID.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'license_id' => array(
+        'description' => 'The {commerce_file_license}.license_id being referenced in this log.',
+        'type' => 'int',
+        'not null' => FALSE,
+        'unsigned' => TRUE,
+      ),
+      'timestamp' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Timestamp of when the file was downloaded.',
+      ),
+      'hostname' => array(
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => FALSE,
+        'description' => 'Hostname of user that downloaded the file.',
+      ),
+    ),
+    'primary key' => array('aid'),
+    'indexes' => array(
+      'license_id' => array('license_id'),
+    ),
+    'foreign keys' => array(
+      'log_license' => array(
+        'table' => 'commerce_file_license',
+        'columns' => array('license_id' => 'license_id'),
+      ),
+    ),
+  );
+
+
+  return $schema;
+}
+
+/**
+ * Implements hook_field_schema().
+ */
+function commerce_file_field_schema($field) {
+  if ($field['type'] == 'commerce_file') {
+    return array(
+      'columns' => array(
+        'fid' => array(
+          'description' => 'The {file_managed}.fid being referenced in this field.',
+          'type' => 'int',
+          'not null' => FALSE,
+          'unsigned' => TRUE,
+        ),
+        'data' => array(
+          'type' => 'blob',
+          'size' => 'big',
+          'not null' => TRUE,
+          'serialize' => TRUE,
+          'description' => 'Serialized data containing the license properties.',
+        ),
+      ),
+      'indexes' => array(
+        'fid' => array('fid'),
+      ),
+      'foreign keys' => array(
+        'fid' => array(
+          'table' => 'file_managed',
+          'columns' => array('fid' => 'fid'),
+        ),
+      ),
+    );
+  }
+}
+
+/**
+ * Implements hook_requirements() to check for a private file scheme.
+ */
+function commerce_file_requirements($phase) {
+  $requirements = array();
+  // Ensure translations don't break at install time
+  $t = get_t();
+
+  // Status report
+  if ($phase == 'runtime') {
+    $scheme_options = _commerce_file_get_private_stream_wrappers_options();
+    $requirements['commerce_file_private_schemes'] = array(
+      'title' => $t('Commerce File'),
+      'description' => $t('Commerce file requires a private file scheme. Visit (<a href="@configure">configure</a>) to set your private file path. Optionally, a private scheme other than Drupal\'s may be implemented.',
+        array(
+          '@configure' => url('admin/config/media/file-system'),
+      )),
+    );
+
+    if (!empty($scheme_options)) {
+      $requirements['commerce_file_private_schemes'] += array(
+        'value' => $t('Available schemes: %schemes', array(
+          '%schemes' => implode(', ', $scheme_options),
+        )),
+      );
+    }
+    else {
+      $requirements['commerce_file_private_schemes'] += array(
+        'severity' => REQUIREMENT_ERROR,
+        'value' => $t('No available private file schemes.'),
+      );
+    }
+  }
+
+  return $requirements;
+}

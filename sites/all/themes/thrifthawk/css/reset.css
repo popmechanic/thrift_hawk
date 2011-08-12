@@ -52,7 +52,7 @@
 /* #Basic Styles
 ================================================== */
 	body {
-		background: #fff;
+		background: #000 url(../images/header-strip.jpg) repeat-x;
 		font: 14px/21px "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
 		color: #444;
 		-webkit-font-smoothing: antialiased; /* Fix for webkit rendering */

@@ -1,10 +1,10 @@
 #nav {
-	margin-top: 20px;
+	margin-top: 40px;
 }
 
 nav.tabs {
 		display: block;
-		margin: 0 0 20px 0;
+		margin: 0 0 0 0;
 		padding: 0;
 		border-bottom: solid 1px #ddd; }
 nav.tabs li {
@@ -56,6 +56,16 @@ nav.tabs-content > li { display:none; }
 nav.tabs-content > li.active { display: block; }
 	
 #page {
-	margin-top: 35px;
+	margin-top: 10px;
 	padding-top: 15px;
+}
+
+#main{
+	padding-top: 10px;
+	padding-left: 10px;
+	padding-right: 10px;
+	background: #fff;
+}
+
+#header {
 }

@@ -33,7 +33,7 @@
       <div id="main" role="main" class="clearfix">
         <?php print render($page['highlighted']); ?>
 
-        <div id="title-tabs-content-wrapper" class="fifteen columns">
+        <div id="title-tabs-content-wrapper" class="nine columns">
           <?php print render($title_prefix); ?>
           <?php if ($title): ?><h1 id="page-title" class="<?php print $title_classes; ?>"<?php print $title_attributes; ?>><?php print $title; ?></h1><?php endif; ?>
           <?php print render($title_suffix); ?>

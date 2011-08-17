@@ -76,6 +76,16 @@ function thrift_hawk_install() {
       'cache' => -1,
     ),
     array(
+      'module' => 'system',
+      'delta' => 'eBay store link',
+      'theme' => $default_theme,
+      'status' => 1,
+      'weight' => 0,
+      'region' => 'sidebar_second',
+      'pages' => '',
+      'cache' => -1,
+    ),
+    array(
       'module' => 'node',
       'delta' => 'recent',
       'theme' => $admin_theme,

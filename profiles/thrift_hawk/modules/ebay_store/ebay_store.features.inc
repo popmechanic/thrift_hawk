@@ -36,7 +36,7 @@ function ebay_store_node_info() {
     'ebay_link' => array(
       'name' => t('eBay link'),
       'base' => 'node_content',
-      'description' => '',
+      'description' => t('Add a link to your eBay store. It\'ll be displayed in the right sidebar.'),
       'has_title' => '1',
       'title_label' => t('Title'),
       'help' => '',

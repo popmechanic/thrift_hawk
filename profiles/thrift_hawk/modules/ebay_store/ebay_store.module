@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the eBay store feature.
+ */
+
+include_once('ebay_store.features.inc');

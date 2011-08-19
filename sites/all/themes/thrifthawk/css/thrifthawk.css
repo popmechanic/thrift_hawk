@@ -66,3 +66,7 @@ nav.tabs-content > li.active { display: block; }
 	padding-right: 10px;
 	background: #fff;
 }
+
+#sidebar_second {
+	margin-top: 50px;
+}
